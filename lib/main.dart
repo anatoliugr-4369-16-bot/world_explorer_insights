@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:world_explorer_insights/bloc/countries/countries_bloc.dart';
 import 'package:world_explorer_insights/core/themes/app_theme.dart';
 import 'package:world_explorer_insights/screens/splash_screen.dart';
+import 'package:world_explorer_insights/services/country_repository.dart';
+import 'screens/dashboard_screen.dart';
 
 void main() {
   runApp(const WorldExplorerApp());
@@ -18,8 +22,10 @@ class WorldExplorerApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const SplashScreen(),
-        '/dashboard': (context) =>
-            const DashboardScreen(), // We'll create later
+        '/dashboard': (context) => BlocProvider(
+          create: (context) => CountriesBloc(repository: CountryRepository()),
+          child: const DashboardScreen(),
+        ),
       },
     );
   }
