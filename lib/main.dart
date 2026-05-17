@@ -7,6 +7,8 @@ import 'package:world_explorer_insights/screens/splash_screen.dart';
 import 'package:world_explorer_insights/services/country_repository.dart';
 import 'package:world_explorer_insights/services/pins_storage_service.dart';
 import 'screens/dashboard_screen.dart';
+import 'screens/explore_screen.dart';
+import 'screens/explorer_board_screen.dart';
 
 void main() {
   runApp(const WorldExplorerApp());
@@ -34,16 +36,18 @@ class WorldExplorerApp extends StatelessWidget {
         routes: {
           '/': (context) => const SplashScreen(),
           '/dashboard': (context) => const DashboardScreen(),
-          // Inside routes of MaterialApp, add:
-          '/explorer_board': (context) => const Scaffold(
-            body: Center(child: Text('Explorer Board - Coming Soon')),
-          ),
-          '/explore': (context) => const Scaffold(
-            body: Center(child: Text('Explore Countries - Coming Soon')),
-          ),
-          '/country_detail': (context) => const Scaffold(
-            body: Center(child: Text('Country Detail - Coming Soon')),
-          ),
+          '/explore': (context) => const ExploreScreen(),
+          '/explorer_board': (context) => const ExplorerBoardScreen(),
+        },
+        onGenerateRoute: (settings) {
+          if (settings.name == '/country_detail') {
+            return MaterialPageRoute(
+              builder: (context) => const Scaffold(
+                body: Center(child: Text('Country Detail (coming soon)')),
+              ),
+            );
+          }
+          return null;
         },
       ),
     );
