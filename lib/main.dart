@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:world_explorer_insights/bloc/countries/countries_bloc.dart';
+import 'package:world_explorer_insights/bloc/pins/pins_bloc.dart';
 import 'package:world_explorer_insights/core/themes/app_theme.dart';
 import 'package:world_explorer_insights/screens/splash_screen.dart';
 import 'package:world_explorer_insights/services/country_repository.dart';
+import 'package:world_explorer_insights/services/pins_storage_service.dart';
 import 'screens/dashboard_screen.dart';
 
 void main() {
@@ -15,18 +17,25 @@ class WorldExplorerApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'World Explorer Insights',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const SplashScreen(),
-        '/dashboard': (context) => BlocProvider(
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
           create: (context) => CountriesBloc(repository: CountryRepository()),
-          child: const DashboardScreen(),
         ),
-      },
+        BlocProvider(
+          create: (context) => PinsBloc(storage: PinsStorageService()),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'World Explorer Insights',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.lightTheme,
+        initialRoute: '/',
+        routes: {
+          '/': (context) => const SplashScreen(),
+          '/dashboard': (context) => const DashboardScreen(),
+        },
+      ),
     );
   }
 }
