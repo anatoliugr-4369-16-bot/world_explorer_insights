@@ -34,6 +34,16 @@ class WorldExplorerApp extends StatelessWidget {
         routes: {
           '/': (context) => const SplashScreen(),
           '/dashboard': (context) => const DashboardScreen(),
+          // Inside routes of MaterialApp, add:
+          '/explorer_board': (context) => const Scaffold(
+            body: Center(child: Text('Explorer Board - Coming Soon')),
+          ),
+          '/explore': (context) => const Scaffold(
+            body: Center(child: Text('Explore Countries - Coming Soon')),
+          ),
+          '/country_detail': (context) => const Scaffold(
+            body: Center(child: Text('Country Detail - Coming Soon')),
+          ),
         },
       ),
     );
