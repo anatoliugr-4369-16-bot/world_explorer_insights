@@ -9,6 +9,8 @@ import 'package:world_explorer_insights/services/pins_storage_service.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/explore_screen.dart';
 import 'screens/explorer_board_screen.dart';
+import 'screens/country_detail_screen.dart';
+import 'models/country.dart';
 
 void main() {
   runApp(const WorldExplorerApp());
@@ -41,10 +43,9 @@ class WorldExplorerApp extends StatelessWidget {
         },
         onGenerateRoute: (settings) {
           if (settings.name == '/country_detail') {
+            final country = settings.arguments as Country;
             return MaterialPageRoute(
-              builder: (context) => const Scaffold(
-                body: Center(child: Text('Country Detail (coming soon)')),
-              ),
+              builder: (context) => CountryDetailScreen(country: country),
             );
           }
           return null;
