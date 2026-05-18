@@ -5,6 +5,7 @@ import '../bloc/pins/pins_event.dart';
 import '../bloc/pins/pins_state.dart';
 import '../core/themes/app_theme.dart';
 import '../models/pinned_country.dart';
+import '../widgets/bottom_nav_bar.dart';
 
 class ExplorerBoardScreen extends StatefulWidget {
   const ExplorerBoardScreen({super.key});
@@ -119,6 +120,18 @@ class _ExplorerBoardScreenState extends State<ExplorerBoardScreen> {
             );
           }
           return const SizedBox.shrink();
+        },
+      ),
+      bottomNavigationBar: BottomNavBar(
+        currentIndex: 2,
+        onTap: (index) {
+          if (index == 0) {
+            Navigator.pushReplacementNamed(context, '/dashboard');
+          } else if (index == 1) {
+            Navigator.pushReplacementNamed(context, '/explore');
+          } else if (index == 2) {
+            // Already on explorer board
+          }
         },
       ),
     );

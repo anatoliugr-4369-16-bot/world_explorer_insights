@@ -5,6 +5,7 @@ import '../bloc/countries/countries_event.dart';
 import '../bloc/countries/countries_state.dart';
 import '../core/themes/app_theme.dart';
 import '../models/country.dart';
+import '../widgets/bottom_nav_bar.dart';
 
 class ExploreScreen extends StatefulWidget {
   const ExploreScreen({super.key});
@@ -173,6 +174,18 @@ class _ExploreScreenState extends State<ExploreScreen> {
             ),
           ),
         ],
+      ),
+      bottomNavigationBar: BottomNavBar(
+        currentIndex: 1,
+        onTap: (index) {
+          if (index == 0) {
+            Navigator.pushReplacementNamed(context, '/dashboard');
+          } else if (index == 1) {
+            // Already on explore
+          } else if (index == 2) {
+            Navigator.pushReplacementNamed(context, '/explorer_board');
+          }
+        },
       ),
     );
   }

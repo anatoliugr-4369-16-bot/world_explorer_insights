@@ -11,6 +11,7 @@ import '../models/country.dart';
 import '../widgets/stat_card.dart';
 import '../widgets/ranking_tile.dart';
 import '../widgets/region_insight_card.dart';
+import '../widgets/bottom_nav_bar.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -103,6 +104,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
             return const Center(child: Text('No data'));
           },
         ),
+      ),
+      bottomNavigationBar: BottomNavBar(
+        currentIndex: 0,
+        onTap: (index) {
+          if (index == 0) {
+            // Already on dashboard
+          } else if (index == 1) {
+            Navigator.pushReplacementNamed(context, '/explore');
+          } else if (index == 2) {
+            Navigator.pushReplacementNamed(context, '/explorer_board');
+          }
+        },
       ),
     );
   }
