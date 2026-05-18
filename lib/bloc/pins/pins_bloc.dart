@@ -27,10 +27,8 @@ class PinsBloc extends Bloc<PinsEvent, PinsState> {
   Future<void> _onAddPin(AddPin event, Emitter<PinsState> emit) async {
     final currentState = state;
     if (currentState is PinsLoaded) {
-      // Avoid duplicate pins
-      final exists = currentState.pins.any(
-        (p) => p.countryCode == event.pin.countryCode,
-      );
+      final exists =
+          currentState.pins.any((p) => p.countryCode == event.pin.countryCode);
       if (!exists) {
         final updatedPins = List<PinnedCountry>.from(currentState.pins)
           ..add(event.pin);
@@ -38,7 +36,6 @@ class PinsBloc extends Bloc<PinsEvent, PinsState> {
         emit(PinsLoaded(updatedPins));
       } else {
         emit(PinsError('Country already pinned'));
-        // re-emit current state after error
         emit(PinsLoaded(currentState.pins));
       }
     }

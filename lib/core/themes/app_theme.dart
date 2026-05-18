@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
-  // Color palette
   static const Color deepForest = Color(0xFF3A5A40);
   static const Color darkOlive = Color(0xFF344E41);
   static const Color vintageCream = Color(0xFFFAF3E0);

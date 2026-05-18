@@ -39,9 +39,9 @@ class _SplashScreenState extends State<SplashScreen> {
                 'World Explorer\nInsights',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                  color: Colors.white,
-                  fontFamily: 'PlayfairDisplay',
-                ),
+                      color: Colors.white,
+                      fontFamily: 'PlayfairDisplay',
+                    ),
               ),
             ],
           ),

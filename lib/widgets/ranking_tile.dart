@@ -27,15 +27,11 @@ class RankingTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: const [
           BoxShadow(
-            color: Color(0x0D000000),
-            blurRadius: 4,
-            offset: Offset(0, 2),
-          ),
+              color: Color(0x0D000000), blurRadius: 4, offset: Offset(0, 2))
         ],
       ),
       child: Row(
         children: [
-          // Medal or rank number
           Container(
             width: 36,
             height: 36,
@@ -46,33 +42,23 @@ class RankingTile extends StatelessWidget {
             child: Center(
               child: rank <= 3
                   ? Icon(medalIcon, color: Colors.white, size: 20)
-                  : Text(
-                      '$rank',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
+                  : Text('$rank',
+                      style: const TextStyle(fontWeight: FontWeight.bold)),
             ),
           ),
           const SizedBox(width: 12),
-          // Flag
           Image.network(flagUrl, width: 36, height: 24, fit: BoxFit.cover),
           const SizedBox(width: 12),
-          // Name
           Expanded(
-            child: Text(
-              name,
-              style: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
-            ),
+            child: Text(name,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
+                    ?.copyWith(fontWeight: FontWeight.w600)),
           ),
-          // Value
-          Text(
-            value,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              color: AppTheme.dustyBrown,
-            ),
-          ),
+          Text(value,
+              style: const TextStyle(
+                  fontWeight: FontWeight.bold, color: AppTheme.dustyBrown)),
         ],
       ),
     );

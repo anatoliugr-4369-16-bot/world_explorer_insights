@@ -1,17 +1,37 @@
-# world_explorer_insights
+# World Explorer Insights
 
-A new Flutter project.
+A premium world intelligence dashboard built with Flutter – vintage atlas design, real-time country analytics, and explorer workspace.
+
+## Features
+
+- **Explorer Dashboard** – total countries, largest/populated/smallest nations, regional breakdowns
+- **World Rankings** – top countries by population, area, density (click any to explore)
+- **Regional Insights** – stats for Africa, Asia, Europe, Americas, Oceania
+- **Country Intelligence** – population, area, density, ranks, comparisons, languages, currencies, borders
+- **Explorer Board** – pin countries, add research notes, edit or remove pins
+- **Search & Filter** – search by name/capital, filter by region, sort by population/area/name
+- **Pull to Refresh** – random spotlight country on every refresh
+
+## Tech Stack
+
+- Flutter (Dart) – UI framework
+- BLoC – state management
+- Dio – API requests
+- Shared Preferences – local storage
+- REST Countries API – real country data
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+```bash
+# Clone the repository
+git clone https://github.com/anatoliugr-4369-16-bot/world_explorer_insights.git
 
-A few resources to get you started if this is your first Flutter project:
+# Navigate to project
+cd world_explorer_insights
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+# Get dependencies
+flutter pub get
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# Run the app
+flutter run
+```

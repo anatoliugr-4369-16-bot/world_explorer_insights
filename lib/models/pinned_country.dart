@@ -1,5 +1,5 @@
 class PinnedCountry {
-  final String countryCode; // cca2 code as identifier
+  final String countryCode;
   final String countryName;
   final String flagUrl;
   final String explorerNote;
@@ -14,18 +14,18 @@ class PinnedCountry {
   });
 
   Map<String, dynamic> toJson() => {
-    'countryCode': countryCode,
-    'countryName': countryName,
-    'flagUrl': flagUrl,
-    'explorerNote': explorerNote,
-    'pinnedDate': pinnedDate.toIso8601String(),
-  };
+        'countryCode': countryCode,
+        'countryName': countryName,
+        'flagUrl': flagUrl,
+        'explorerNote': explorerNote,
+        'pinnedDate': pinnedDate.toIso8601String(),
+      };
 
   factory PinnedCountry.fromJson(Map<String, dynamic> json) => PinnedCountry(
-    countryCode: json['countryCode'],
-    countryName: json['countryName'],
-    flagUrl: json['flagUrl'],
-    explorerNote: json['explorerNote'],
-    pinnedDate: DateTime.parse(json['pinnedDate']),
-  );
+        countryCode: json['countryCode'],
+        countryName: json['countryName'],
+        flagUrl: json['flagUrl'],
+        explorerNote: json['explorerNote'],
+        pinnedDate: DateTime.parse(json['pinnedDate']),
+      );
 }

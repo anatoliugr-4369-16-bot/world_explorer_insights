@@ -97,11 +97,8 @@ class _ExplorerBoardScreenState extends State<ExplorerBoardScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.push_pin_outlined,
-                      size: 80,
-                      color: AppTheme.secondaryText,
-                    ),
+                    Icon(Icons.push_pin_outlined,
+                        size: 80, color: AppTheme.secondaryText),
                     SizedBox(height: 16),
                     Text(
                       'No pinned countries yet.\nTap the pin icon on any country detail screen.',
@@ -138,7 +135,6 @@ class _ExplorerBoardScreenState extends State<ExplorerBoardScreen> {
           children: [
             Row(
               children: [
-                // Flag
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: Image.network(
@@ -151,29 +147,26 @@ class _ExplorerBoardScreenState extends State<ExplorerBoardScreen> {
                   ),
                 ),
                 const SizedBox(width: 12),
-                // Country name
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         pin.countryName,
-                        style: Theme.of(
-                          context,
-                        ).textTheme.titleLarge?.copyWith(fontSize: 18),
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleLarge
+                            ?.copyWith(fontSize: 18),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         'Pinned: ${_formatDate(pin.pinnedDate)}',
                         style: const TextStyle(
-                          fontSize: 12,
-                          color: AppTheme.secondaryText,
-                        ),
+                            fontSize: 12, color: AppTheme.secondaryText),
                       ),
                     ],
                   ),
                 ),
-                // Action buttons
                 IconButton(
                   icon: const Icon(Icons.edit, color: AppTheme.dustyBrown),
                   onPressed: () => _editNote(pin),

@@ -25,7 +25,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
     'Americas',
     'Asia',
     'Europe',
-    'Oceania',
+    'Oceania'
   ];
   final List<String> _sortOptions = ['name', 'population', 'area'];
 
@@ -63,9 +63,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
           _isAscending = true;
         }
       });
-      context.read<CountriesBloc>().add(
-        SortCountries(_selectedSort, _isAscending),
-      );
+      context
+          .read<CountriesBloc>()
+          .add(SortCountries(_selectedSort, _isAscending));
     }
   }
 
@@ -78,7 +78,6 @@ class _ExploreScreenState extends State<ExploreScreen> {
       ),
       body: Column(
         children: [
-          // Search bar
           Padding(
             padding: const EdgeInsets.all(16),
             child: TextField(
@@ -86,15 +85,13 @@ class _ExploreScreenState extends State<ExploreScreen> {
               decoration: InputDecoration(
                 hintText: 'Search country or capital...',
                 prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
                 filled: true,
                 fillColor: Colors.white,
               ),
             ),
           ),
-          // Filters row
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
@@ -104,16 +101,13 @@ class _ExploreScreenState extends State<ExploreScreen> {
                     initialValue: _selectedRegion,
                     items: _regions.map((region) {
                       return DropdownMenuItem(
-                        value: region,
-                        child: Text(region),
-                      );
+                          value: region, child: Text(region));
                     }).toList(),
                     onChanged: _onRegionChanged,
                     decoration: InputDecoration(
                       labelText: 'Region',
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
+                          borderRadius: BorderRadius.circular(30)),
                       filled: true,
                       fillColor: Colors.white,
                     ),
@@ -131,8 +125,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                     decoration: InputDecoration(
                       labelText: 'Sort by',
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
+                          borderRadius: BorderRadius.circular(30)),
                       filled: true,
                       fillColor: Colors.white,
                     ),
@@ -140,15 +133,13 @@ class _ExploreScreenState extends State<ExploreScreen> {
                 ),
                 IconButton(
                   icon: Icon(
-                    _isAscending ? Icons.arrow_upward : Icons.arrow_downward,
-                  ),
+                      _isAscending ? Icons.arrow_upward : Icons.arrow_downward),
                   onPressed: () => _onSortChanged(_selectedSort),
                 ),
               ],
             ),
           ),
           const SizedBox(height: 8),
-          // Country grid
           Expanded(
             child: BlocBuilder<CountriesBloc, CountriesState>(
               builder: (context, state) {
@@ -165,11 +156,11 @@ class _ExploreScreenState extends State<ExploreScreen> {
                     padding: const EdgeInsets.all(12),
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio: 0.75,
-                          crossAxisSpacing: 12,
-                          mainAxisSpacing: 12,
-                        ),
+                      crossAxisCount: 2,
+                      childAspectRatio: 0.75,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
+                    ),
                     itemCount: countries.length,
                     itemBuilder: (context, index) {
                       final country = countries[index];
@@ -189,7 +180,17 @@ class _ExploreScreenState extends State<ExploreScreen> {
   Widget _buildCountryCard(Country country) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, '/country_detail', arguments: country);
+        final state = context.read<CountriesBloc>().state;
+        if (state is CountriesLoaded) {
+          Navigator.pushNamed(
+            context,
+            '/country_detail',
+            arguments: {
+              'country': country,
+              'allCountries': state.allCountries,
+            },
+          );
+        }
       },
       child: Card(
         elevation: 4,
@@ -200,9 +201,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
             Expanded(
               flex: 2,
               child: ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(20),
-                ),
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(20)),
                 child: Container(
                   color: AppTheme.mutedBeige,
                   child: Image.network(
@@ -223,9 +223,10 @@ class _ExploreScreenState extends State<ExploreScreen> {
                   children: [
                     Text(
                       country.name,
-                      style: Theme.of(
-                        context,
-                      ).textTheme.titleLarge?.copyWith(fontSize: 16),
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleLarge
+                          ?.copyWith(fontSize: 16),
                       textAlign: TextAlign.center,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -234,9 +235,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                     Text(
                       country.capital,
                       style: const TextStyle(
-                        fontSize: 12,
-                        color: AppTheme.secondaryText,
-                      ),
+                          fontSize: 12, color: AppTheme.secondaryText),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 4),

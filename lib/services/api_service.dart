@@ -1,26 +1,42 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import '../models/country.dart';
 
 class ApiService {
-  static const String baseUrl = 'https://restcountries.com/v3.1';
-  final Dio _dio = Dio(
-    BaseOptions(
-      connectTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 10),
-    ),
-  );
+  final Dio _dio = Dio(BaseOptions(
+    connectTimeout: const Duration(seconds: 30),
+    receiveTimeout: const Duration(seconds: 30),
+    headers: {
+      'Accept': 'application/json',
+      'User-Agent': 'WorldExplorerInsights/1.0',
+    },
+  ));
 
   Future<List<Country>> fetchAllCountries() async {
     try {
-      final response = await _dio.get('$baseUrl/all');
-      if (response.statusCode == 200) {
-        List<dynamic> data = response.data;
-        return data.map((json) => Country.fromJson(json)).toList();
+      // Maximum 10 fields allowed by the API
+      const fields =
+          'name,capital,region,subregion,population,area,flags,languages,latlng';
+
+      final url = 'https://restcountries.com/v3.1/all?fields=$fields';
+
+      final response = await _dio.get(url);
+
+      if (response.statusCode == 200 && response.data is List) {
+        final List<Country> countries = [];
+        for (var json in response.data) {
+          try {
+            countries.add(Country.fromJson(json));
+          } catch (e) {
+            print('Parse error: $e');
+          }
+        }
+        print('Loaded ${countries.length} countries');
+        return countries;
       } else {
-        throw Exception('Failed to load countries');
+        throw Exception('API returned ${response.statusCode}');
       }
     } on DioException catch (e) {
-      // Changed from DioError
       throw Exception('Network error: ${e.message}');
     }
   }

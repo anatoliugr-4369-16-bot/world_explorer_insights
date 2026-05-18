@@ -31,17 +31,17 @@ class StatCard extends StatelessWidget {
             Text(
               title,
               style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                color: Colors.white70,
-                fontSize: 12,
-              ),
+                    color: Colors.white70,
+                    fontSize: 12,
+                  ),
             ),
             const SizedBox(height: 4),
             Text(
               value,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: Colors.white,
-                fontSize: 18,
-              ),
+                    color: Colors.white,
+                    fontSize: 18,
+                  ),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),

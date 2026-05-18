@@ -7,9 +7,8 @@ class PinsStorageService {
 
   Future<void> savePins(List<PinnedCountry> pins) async {
     final prefs = await SharedPreferences.getInstance();
-    final List<String> pinsJson = pins
-        .map((pin) => jsonEncode(pin.toJson()))
-        .toList();
+    final List<String> pinsJson =
+        pins.map((pin) => jsonEncode(pin.toJson())).toList();
     await prefs.setStringList(_pinsKey, pinsJson);
   }
 
