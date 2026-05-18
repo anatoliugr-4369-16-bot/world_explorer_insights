@@ -24,6 +24,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   late final CountriesBloc _countriesBloc;
   late final PinsBloc _pinsBloc;
   Country? _spotlight;
+  String? _selectedRegionFilter;
 
   @override
   void initState() {
@@ -44,7 +45,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   void _refreshDashboard() {
+    setState(() {
+      _selectedRegionFilter = null;
+    });
     _countriesBloc.add(FetchCountries());
+  }
+
+  void _filterByRegion(String region) {
+    setState(() {
+      _selectedRegionFilter = region;
+    });
+    // Send filter event to BLoC
+    _countriesBloc.add(FilterByRegion(region));
+  }
+
+  void _clearRegionFilter() {
+    setState(() {
+      _selectedRegionFilter = null;
+    });
+    _countriesBloc.add(FilterByRegion('All'));
   }
 
   void _navigateToCountry(Country country, List<Country> allCountries) {
@@ -62,8 +81,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Explorer Dashboard'),
+        title: _selectedRegionFilter == null
+            ? const Text('Explorer Dashboard')
+            : Text('${_selectedRegionFilter} Insights'),
         actions: [
+          if (_selectedRegionFilter != null)
+            IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: _clearRegionFilter,
+              tooltip: 'Clear region filter',
+            ),
           IconButton(
             icon: const Icon(Icons.push_pin),
             onPressed: () => Navigator.pushNamed(context, '/explorer_board'),
@@ -77,7 +104,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       body: RefreshIndicator(
         onRefresh: () async {
           _refreshDashboard();
-          await Future.delayed(const Duration(seconds: 1));
+          await Future.delayed(const Duration(milliseconds: 500));
         },
         child: BlocBuilder<CountriesBloc, CountriesState>(
           builder: (context, state) {
@@ -87,19 +114,34 @@ class _DashboardScreenState extends State<DashboardScreen> {
               return Center(child: Text('Error: ${state.message}'));
             } else if (state is CountriesLoaded) {
               final countries = state.filteredCountries;
+              final allCountries = state.allCountries;
+
               if (countries.isEmpty) {
-                return const Center(child: Text('No countries found'));
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('No countries found in this region'),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: _clearRegionFilter,
+                        child: const Text('View All Regions'),
+                      ),
+                    ],
+                  ),
+                );
               }
 
-              // Set spotlight after build is complete
-              if (_spotlight == null) {
+              if (_spotlight == null ||
+                  (_selectedRegionFilter != null &&
+                      !countries.contains(_spotlight))) {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   if (mounted) _selectRandomSpotlight(countries);
                 });
                 return const Center(child: CircularProgressIndicator());
               }
 
-              return _buildDashboard(countries);
+              return _buildDashboard(countries, allCountries);
             }
             return const Center(child: Text('No data'));
           },
@@ -108,9 +150,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       bottomNavigationBar: BottomNavBar(
         currentIndex: 0,
         onTap: (index) {
-          if (index == 0) {
-            // Already on dashboard
-          } else if (index == 1) {
+          if (index == 1) {
             Navigator.pushReplacementNamed(context, '/explore');
           } else if (index == 2) {
             Navigator.pushReplacementNamed(context, '/explorer_board');
@@ -120,7 +160,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildDashboard(List<Country> countries) {
+  Widget _buildDashboard(List<Country> countries, List<Country> allCountries) {
     final totalCountries = countries.length;
     final largestCountry = countries.reduce((a, b) => a.area > b.area ? a : b);
     final mostPopulated =
@@ -140,13 +180,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ..sort(
           (a, b) => (b.population / b.area).compareTo(a.population / a.area));
 
-    // Region insights
+    // Region insights (show all regions, but highlight counts from filtered view)
     final regions = {
-      'Africa': countries.where((c) => c.region == 'Africa').toList(),
-      'Europe': countries.where((c) => c.region == 'Europe').toList(),
-      'Asia': countries.where((c) => c.region == 'Asia').toList(),
-      'Americas': countries.where((c) => c.region == 'Americas').toList(),
-      'Oceania': countries.where((c) => c.region == 'Oceania').toList(),
+      'Africa': allCountries.where((c) => c.region == 'Africa').toList(),
+      'Europe': allCountries.where((c) => c.region == 'Europe').toList(),
+      'Asia': allCountries.where((c) => c.region == 'Asia').toList(),
+      'Americas': allCountries.where((c) => c.region == 'Americas').toList(),
+      'Oceania': allCountries.where((c) => c.region == 'Oceania').toList(),
     };
 
     return SingleChildScrollView(
@@ -155,6 +195,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Filter indicator
+          if (_selectedRegionFilter != null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: AppTheme.antiqueGold.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.filter_alt, size: 16),
+                    const SizedBox(width: 8),
+                    Text('Showing: $_selectedRegionFilter'),
+                  ],
+                ),
+              ),
+            ),
+
           GridView.count(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
@@ -164,7 +226,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             mainAxisSpacing: 12,
             children: [
               GestureDetector(
-                onTap: () => _navigateToCountry(mostPopulated, countries),
+                onTap: () => _navigateToCountry(mostPopulated, allCountries),
                 child: StatCard(
                   title: 'Most Populated',
                   value: mostPopulated.name,
@@ -172,7 +234,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
               ),
               GestureDetector(
-                onTap: () => _navigateToCountry(largestCountry, countries),
+                onTap: () => _navigateToCountry(largestCountry, allCountries),
                 child: StatCard(
                   title: 'Largest Country',
                   value: largestCountry.name,
@@ -180,7 +242,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
               ),
               GestureDetector(
-                onTap: () => _navigateToCountry(smallestCountry, countries),
+                onTap: () => _navigateToCountry(smallestCountry, allCountries),
                 child: StatCard(
                   title: 'Smallest Country',
                   value: smallestCountry.name,
@@ -198,7 +260,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 icon: Icons.public,
               ),
               GestureDetector(
-                onTap: () => _navigateToCountry(spotlight, countries),
+                onTap: () => _navigateToCountry(spotlight, allCountries),
                 child: StatCard(
                   title: 'Spotlight',
                   value: spotlight.name,
@@ -209,6 +271,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ],
           ),
           const SizedBox(height: 24),
+
           Text('World Rankings',
               style: Theme.of(context)
                   .textTheme
@@ -220,28 +283,29 @@ class _DashboardScreenState extends State<DashboardScreen> {
               topPopulation.take(5).toList(),
               (c) => '${(c.population / 1e6).toStringAsFixed(1)}M',
               Icons.emoji_events,
-              countries),
+              allCountries),
           const SizedBox(height: 16),
           _buildRankingSection(
               'Largest Area',
               topArea.take(5).toList(),
               (c) => '${(c.area / 1e6).toStringAsFixed(1)}M km²',
               Icons.landscape,
-              countries),
+              allCountries),
           const SizedBox(height: 16),
           _buildRankingSection(
               'Smallest Area',
               smallestArea.take(5).toList(),
               (c) => '${c.area.toStringAsFixed(0)} km²',
               Icons.crop_square,
-              countries),
+              allCountries),
           const SizedBox(height: 16),
           _buildRankingSection(
               'Highest Density',
               densityCountries.take(5).toList(),
               (c) => '${(c.population / c.area).toStringAsFixed(0)}/km²',
               Icons.people,
-              countries),
+              allCountries),
+
           const SizedBox(height: 24),
           Text('Regional Insights',
               style: Theme.of(context)
@@ -262,19 +326,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     countryList.reduce((a, b) => a.area > b.area ? a : b);
                 final mostPop = countryList
                     .reduce((a, b) => a.population > b.population ? a : b);
-                return Padding(
-                  padding: const EdgeInsets.only(right: 12),
+                return GestureDetector(
+                  onTap: () => _filterByRegion(regionName),
                   child: RegionInsightCard(
                     regionName: regionName,
                     countryCount: countryList.length,
                     largestCountry: largest.name,
                     mostPopulatedCountry: mostPop.name,
-                    accentColor: AppTheme.antiqueGold,
+                    accentColor: _selectedRegionFilter == regionName
+                        ? AppTheme.antiqueGold
+                        : AppTheme.mutedBeige,
                   ),
                 );
               },
             ),
           ),
+
           const SizedBox(height: 24),
           Text('Country Spotlight',
               style: Theme.of(context)
@@ -282,7 +349,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   .displayLarge
                   ?.copyWith(fontSize: 24)),
           const SizedBox(height: 12),
-          _buildSpotlightCard(spotlight, countries),
+          _buildSpotlightCard(spotlight, allCountries),
+
           const SizedBox(height: 24),
           Text('Did You Know?',
               style: Theme.of(context)
